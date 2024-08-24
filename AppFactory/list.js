@@ -37,9 +37,99 @@ document.getElementById('cancel__btn').addEventListener('click', function() {
     document.getElementById('modal').style.display = 'none';
 });
 
-// Закрытие по клику вне окна
-window.addEventListener('click', function(event) {
-    if (event.target == document.getElementById('modal')) {
-        document.getElementById('modal').style.display = 'none';
-    }
+// -------------------Валидация-------------------
+
+document.addEventListener('DOMContentLoaded', function () {
+    const validate = new window.JustValidate('#form', {
+        errorFieldCssClass: 'is-invalid',
+        errorLabelStyle: {
+            color: '#FF0000',
+            fontSize: '12px',
+        },
+    });
+
+    validate
+        .addField('#number', [
+            {
+                rule: 'required',
+                errorMessage: 'Поле обязательно для заполнения',
+            },
+            {
+                rule: 'minLength',
+                value: 6,
+                errorMessage: 'Номер ВЗН должен содержать не менее 6 цифр',
+            },
+            {
+                rule: 'number',
+                errorMessage: 'Номер ВЗН должен содержать только числа',
+            },
+        ])
+
+        .addField('#sender', [
+            {
+                rule: 'required',
+                errorMessage: 'Поле обязательно для заполнения',
+            },
+            {
+                rule: 'minLength',
+                value: 5,
+                errorMessage: 'Отправитель должен содержать не менее 5 символов',
+            },
+        ])
+
+        .addField('#receiver', [
+            {
+                rule: 'required',
+                errorMessage: 'Поле обязательно для заполнения',
+            },
+            {
+                rule: 'minLength',
+                value: 5,
+                errorMessage: 'Получатель должен содержать не менее 5 символов',
+            },
+        ])
+
+        .addField('#start__date', [
+            {
+                rule: 'required',
+                errorMessage: 'Поле обязательно для заполнения',
+            },
+            {
+                validator: (value) => {
+                    const startDate = new Date(value);
+                    return startDate.getFullYear() >= 2020;
+                },
+                errorMessage: 'Дата начала не может быть раньше 2020 года',
+            },
+        ])
+
+        .addField('#end__date', [
+            {
+                rule: 'required',
+                errorMessage: 'Поле обязательно для заполнения',
+            },
+            {
+                validator: (value) => {
+                    const endDate = new Date(value);
+                    const today = new Date();
+                    return endDate <= today;
+                },
+                errorMessage: 'Дата окончания не может быть позже сегодняшнего дня',
+            },
+        ])
+        .onSuccess((event) => {
+            const submitButton = document.getElementById('submit__btn');
+            submitButton.innerHTML = ''; // Очищаем текст кнопки
+            submitButton.classList.add('success-icon'); // Добавляем иконку с анимацией
+            // Убираем иконку после паузы
+            setTimeout(() => {
+                submitButton.classList.add('hidden'); // Запуск анимации исчезновения
+            }, 2000);
+
+            // Возвращаем текст кнопки после исчезновения галочки
+            setTimeout(() => {
+                submitButton.classList.remove('success-icon', 'hidden');
+                submitButton.innerHTML = 'Поиск'; // Возвращаем текст кнопки
+            }, 2200);
+        });
 });

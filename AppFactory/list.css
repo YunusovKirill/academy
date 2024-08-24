@@ -219,6 +219,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border: none;
     border-radius: 100px;
     background-color: #2D609B;
+    opacity: 1;
+    transition: opacity .1s ease-in-out; /* Плавное исчезновение */
 }
 
 .cancel__btn {
@@ -226,4 +228,30 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border: 1px solid #2D609B;
     border-radius: 100px;
     background-color: transparent;
+}
+
+.modal__form__fieldset input.is-invalid {
+    border: 1px solid red;
+    border-radius: 4px;
+}
+
+.error-messages {
+    color: red;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.success-icon {
+    background-color: #12B76A;
+    background-image: url('img/success-icon.svg'); /* Укажите путь к вашей иконке галочки */
+    background-size: 1rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 1;
+    transition: opacity .1s ease-in-out; /* Плавное исчезновение */
+}
+
+.hidden {
+    opacity: 0;
 }

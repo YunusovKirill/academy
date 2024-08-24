@@ -4,8 +4,12 @@ footer.innerHTML = `
     <nav class="footer">
         <button class="footer__btn">Меню</button>
         <button class="footer__btn">Сканер</button>
-        <button class="footer__btn">Назад</button>
+        <button id="footer__btn-back" class="footer__btn">Назад</button>
     </nav>
 `;
 
 document.body.appendChild(footer);
+
+document.getElementById('footer__btn-back').addEventListener('click', function() {
+    history.back();
+});

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <link rel="icon" href="img/settings-2.svg" type="image/svg">
+    <link href="https://cdn.jsdelivr.net/npm/just-validate@latest/dist/css/just-validate.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="list.css">
     <title>Список ВЗН</title>
@@ -16,27 +17,27 @@
                 <span class="close__btn" id="close__btn"></span>
                 <h2>Фильтр ВЗН УП</h2>
             </div>
-            <form class="modal__form">
+            <form id="form" class="modal__form">
                 <fieldset class="modal__form__fieldset">
                     <legend for="number">Номер ВЗН</legend>
-                    <input type="number" id="number" name="number" placeholder="7063041">
+                    <input type="number" id="number" name="number" placeholder="7063041" required>
                 </fieldset>
                 <fieldset class="modal__form__fieldset">
                     <legend for="sender">Отправитель</legend>
-                    <input type="text" id="sender" name="sender" placeholder="Цех 01">
+                    <input type="text" id="sender" name="sender" placeholder="Цех 01" required>
                 </fieldset>    
                 <fieldset class="modal__form__fieldset">
                     <legend for="receiver">Получатель</legend>
-                    <input type="text" id="receiver" name="receiver" placeholder="Цех 02">
+                    <input type="text" id="receiver" name="receiver" placeholder="Цех 02" required>
                 </fieldset>
                 <fieldset class="modal__form__fieldset">
                     <legend for="date">Дата принятия (период)</legend>
-                    <input type="date" id="start__date" name="start__date" placeholder="Начало">
+                    <input type="date" id="start__date" name="start__date" required>
                     <span>-</span>
-                    <input type="date" id="end__date" name="end__date" placeholder="Конец">
+                    <input type="date" id="end__date" name="end__date" required>
                 </fieldset>       
                 <div class="modal__btns">
-                    <button type="submit" class="modal__btn submit__btn">Поиск</button>
+                    <button id="submit__btn" type="submit" class="modal__btn submit__btn">Поиск</button>
                     <button type="button" class="modal__btn cancel__btn" id="cancel__btn">Отмена</button>
                 </div>
             </form>
@@ -62,6 +63,7 @@
         </main>
     </div>
 </body>
+<script src="https://unpkg.com/just-validate@latest/dist/just-validate.production.min.js"></script>
 <script src="footer.js"></script>
 <script src="list.js"></script>
 </html>
