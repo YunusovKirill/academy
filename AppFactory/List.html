@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="icon" href="img/settings-2.svg" type="image/svg">
+    <link href="https://cdn.jsdelivr.net/npm/just-validate@latest/dist/css/just-validate.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="list.css">
+    <title>Список ВЗН</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="modal" id="modal">
+            <div class="modal__header">
+                <span class="close__btn" id="close__btn"></span>
+                <h2>Фильтр ВЗН УП</h2>
+            </div>
+            <form id="form" class="modal__form">
+                <fieldset class="modal__form__fieldset">
+                    <legend for="number">Номер ВЗН</legend>
+                    <input type="number" id="number" name="number" placeholder="7063041" required>
+                </fieldset>
+                <fieldset class="modal__form__fieldset">
+                    <legend for="sender">Отправитель</legend>
+                    <input type="text" id="sender" name="sender" placeholder="Цех 01" required>
+                </fieldset>    
+                <fieldset class="modal__form__fieldset">
+                    <legend for="receiver">Получатель</legend>
+                    <input type="text" id="receiver" name="receiver" placeholder="Цех 02" required>
+                </fieldset>
+                <fieldset class="modal__form__fieldset">
+                    <legend for="date">Дата принятия (период)</legend>
+                    <input type="date" id="start__date" name="start__date" required>
+                    <span>-</span>
+                    <input type="date" id="end__date" name="end__date" required>
+                </fieldset>       
+                <div class="modal__btns">
+                    <button id="submit__btn" type="submit" class="modal__btn submit__btn">Поиск</button>
+                    <button type="button" class="modal__btn cancel__btn" id="cancel__btn">Отмена</button>
+                </div>
+            </form>
+        </div>        
+        <header class="header__list">
+            <h1 class="header__title">ВЗН УП (Расход)</h1>
+            <div class="header__btn">
+                <button id="header__btn__search">Поиск</button>
+                <button>Создать</button>
+            </div>
+        </header>
+        <main>
+            <ul class="list__items">
+                <li class="list__items__item">
+                    <h2 class="list__items__item__title">ВЗН №132313</h2>
+                    <div class="list__items__item__info">
+                        <span class="list__items__item__info__title">Отправитель: <span class="list__items__item__info__content">Цех 01 / участок Цеха 01</span></span>
+                        <span class="list__items__item__info__title">Получатель: <span class="list__items__item__info__content">Цех 02 / участок Цеха 02</span></span>
+                        <span class="list__items__item__info__title">Дата выдачи: <span class="list__items__item__info__content">15.06.2024</span></span>
+                    </div>
+                </li>
+            </ul> 
+        </main>
+    </div>
+</body>
+<script src="https://unpkg.com/just-validate@latest/dist/just-validate.production.min.js"></script>
+<script src="footer.js"></script>
+<script src="list.js"></script>
+</html>
