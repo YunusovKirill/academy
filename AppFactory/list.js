@@ -55,13 +55,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 errorMessage: 'Поле обязательно для заполнения',
             },
             {
-                rule: 'minLength',
-                value: 6,
-                errorMessage: 'Номер ВЗН должен содержать не менее 6 цифр',
-            },
-            {
                 rule: 'number',
                 errorMessage: 'Номер ВЗН должен содержать только числа',
+            },
+            {
+                rule: 'minNumber',
+                value: 0,
+                errorMessage: 'Номер ВЗН не может быть отрицательным',
+            },
+            {
+                rule: 'maxNumber',
+                value: 99999999999999999999,
+                errorMessage: 'Номер ВЗН не должен превышать 20 цифр',
+            },
+            {
+                validator: (value) => {
+                    return Number.isInteger(Number(value));
+                },
+                errorMessage: 'Номер ВЗН должен быть целым числом',
             },
         ])
 
@@ -71,9 +82,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 errorMessage: 'Поле обязательно для заполнения',
             },
             {
-                rule: 'minLength',
-                value: 5,
-                errorMessage: 'Отправитель должен содержать не менее 5 символов',
+                rule: 'maxLength',
+                value: 50,
+                errorMessage: 'Отправитель должен содержать не более 50 символов',
             },
         ])
 
@@ -83,9 +94,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 errorMessage: 'Поле обязательно для заполнения',
             },
             {
-                rule: 'minLength',
-                value: 5,
-                errorMessage: 'Получатель должен содержать не менее 5 символов',
+                rule: 'maxLength',
+                value: 50,
+                errorMessage: 'Получатель должен содержать не более 50 символов',
             },
         ])
 
@@ -119,17 +130,16 @@ document.addEventListener('DOMContentLoaded', function () {
         ])
         .onSuccess((event) => {
             const submitButton = document.getElementById('submit__btn');
-            submitButton.innerHTML = ''; // Очищаем текст кнопки
-            submitButton.classList.add('success-icon'); // Добавляем иконку с анимацией
-            // Убираем иконку после паузы
+            submitButton.innerHTML = '';
+            submitButton.classList.add('success-icon');
+
             setTimeout(() => {
-                submitButton.classList.add('hidden'); // Запуск анимации исчезновения
+                submitButton.classList.add('hidden'); 
             }, 2000);
 
-            // Возвращаем текст кнопки после исчезновения галочки
             setTimeout(() => {
                 submitButton.classList.remove('success-icon', 'hidden');
-                submitButton.innerHTML = 'Поиск'; // Возвращаем текст кнопки
+                submitButton.innerHTML = 'Поиск';
             }, 2200);
         });
 });
