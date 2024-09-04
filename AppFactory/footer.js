@@ -10,6 +10,10 @@ footer.innerHTML = `
 
 document.body.appendChild(footer);
 
+document.getElementById('footer__btn-menu').addEventListener('click', function() {
+    window.location.href = 'index.html';
+});
+
 document.getElementById('footer__btn-back').addEventListener('click', function() {
     history.back();
 });
