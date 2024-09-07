@@ -1,0 +1,7 @@
+.menu__items__item-accounting {
+    margin-left: 0;
+}
+
+.menu__items__item-accounting::before {
+    display: none;
+}

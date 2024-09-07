@@ -1,0 +1,7 @@
+.menu__items__item-settings:first-child:before {
+    background-image: url('../../../../img/settings-1.svg');
+}
+
+.menu__items__item-settings:nth-child(2)::before {
+    background-image: url('../../../../img/settings-2.svg');
+}
