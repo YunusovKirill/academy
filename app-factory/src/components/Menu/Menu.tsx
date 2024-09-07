@@ -1,11 +1,16 @@
+import { useNavigate } from 'react-router-dom';
 import './menu.css'
-import MenuNav from './MenuNav/MenuNav'
 
 function Menu () {
+
+    const navigate = useNavigate();
+
     return (
-        <main>
-            <MenuNav />
-        </main>
+        <ul className='menu__items'>
+            <li className='menu__items__item' onClick={() => navigate('/tasks')}>Задачи</li>
+            <li className='menu__items__item' onClick={() => navigate('/settings')}>Настройки</li>
+            <li className='menu__items__item'>О системе</li>
+        </ul> 
     )
 }
 
