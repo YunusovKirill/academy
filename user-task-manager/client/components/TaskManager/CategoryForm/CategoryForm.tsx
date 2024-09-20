@@ -23,7 +23,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onAddCategory }) => {
         className={styles.input}
         required
       />
-      <button type="submit" className={styles.submitButton}>Добавить категорию</button>
+      <button type="submit">Добавить</button>
     </form>
   );
 };

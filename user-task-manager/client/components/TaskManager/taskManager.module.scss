@@ -1,0 +1,119 @@
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
+
+.container {
+  @include container;
+}
+
+.title {
+  @include title;
+}
+
+h2 {
+  @include title;
+  margin-bottom: 10px;
+  font-size: 18px
+}
+
+button {
+  @include button($primary-color, $primary-color-hover)
+}
+
+.category__list {
+  @include listReset;
+  
+  &__item {
+    @include item;
+    flex-direction: column;
+  }
+}
+
+.task__list {
+  @include listReset;
+  width: 100%;
+  
+  &__item {
+    @include listReset;
+    @include item;
+    text-decoration: none;
+
+    input {
+      @include input
+    }
+
+    &__edit {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+
+      input {
+        flex: 1;
+        margin-right: 5px;
+      }
+    }
+
+    &__done {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+      text-decoration: none;
+
+      button:not(:last-child) {
+        margin-right: 5px;
+      }
+
+      @media(max-width:400px) {
+        & {
+          flex-direction: column;
+        }
+
+        &__btn {
+          margin-top: 10px;
+        }
+      }
+
+      &__btn {
+        display: flex;
+      }
+    }
+  }
+}
+
+.completed {
+  text-decoration: line-through;
+  color: $success-color;
+}
+
+.form {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  margin-bottom: 20px;
+  
+  input {
+    width: 100%;
+  }
+  
+  button {
+    @include successButton;
+    flex: 1;
+  }
+}
+
+input {
+  @include input;
+}
+
+.remove_button {
+  @include removeButton;
+}
+
+.remove_category_button {
+  @include removeButton;
+  width: 100%;
+}
+
+.success_button {
+ @include successButton
+}

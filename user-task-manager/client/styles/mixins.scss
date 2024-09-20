@@ -1,0 +1,78 @@
+@import './variables.scss';
+
+@mixin container {
+  padding: 20px;
+  max-width: 600px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+@mixin title {
+  margin: 0;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+}
+
+@mixin listReset {
+  list-style: none;
+  padding: 0;
+}
+
+@mixin buttonDefault {
+  padding: 10px;
+  color: $color;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+@mixin button($background-color, $hover) {
+  padding: 10px;
+  color: $color;
+  cursor: pointer;
+  border: none;
+  background-color: $background-color;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: $hover;
+  }
+}
+
+@mixin successButton {
+  @include buttonDefault;
+  background-color: $success-color;
+
+  &:hover {
+    background-color: $success-color-hover;
+  }
+}
+
+@mixin removeButton {
+  @include buttonDefault;
+  background-color: $delete-color;
+
+  &:hover {
+    background-color: $delete-color-hover;
+  }
+}
+
+@mixin input {
+  padding: 10px;
+  border: 1px solid $input-border;
+  border-radius: 4px;
+}
+
+@mixin item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}

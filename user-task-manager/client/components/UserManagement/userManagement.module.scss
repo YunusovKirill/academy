@@ -1,0 +1,54 @@
+@import '../../styles/mixins.scss';
+@import '../../styles/variables.scss';
+
+.container {
+  @include container;
+}
+
+.title {
+  @include title;
+}
+
+.user__list {
+  @include listReset;
+
+  &__item {
+    @include item;
+
+    div {
+      display: flex;
+    }
+
+    input {
+      @include input;
+      width: 100%;
+      margin-right: 5px;
+    }
+
+    button {
+      @include button($primary-color, $primary-color-hover);
+      flex-grow: 1;
+      max-height: 38px;
+    }
+
+    &__done {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+
+      button {
+        @include button($primary-color, $primary-color-hover)
+      }
+
+      button:nth-child(2) {
+        margin-left: 5px;
+        background-color: $delete-color;
+
+        &:hover {
+          background-color: $delete-color-hover;
+        }
+      }
+    }
+  }
+}

@@ -20,5 +20,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["client/vite-env.d.ts", "client/main.tsx", "client/App.tsx", "client/components"]
 }
