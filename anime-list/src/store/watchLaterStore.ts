@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { produce } from 'immer';
 
 interface WatchLaterAnime {
   id: number;
@@ -13,7 +14,6 @@ interface WatchLaterState {
   animeList: WatchLaterAnime[];
   addAnime: (anime: WatchLaterAnime) => void;
   removeAnime: (id: number) => void;
-  sortAnime: (sortBy: 'weight' | 'date') => void;
 }
 
 export const useWatchLaterStore = create(
@@ -21,20 +21,13 @@ export const useWatchLaterStore = create(
     (set) => ({
       animeList: [],
       addAnime: (anime) =>
-        set((state) => ({
-          animeList: [...state.animeList, { ...anime, addedAt: Date.now() }],
+        set(produce((state: WatchLaterState) => {
+          state.animeList.push({ ...anime, addedAt: Date.now() });
         })),
       removeAnime: (id) =>
-        set((state) => ({
-          animeList: state.animeList.filter((anime) => anime.id !== id),
+        set(produce((state: WatchLaterState) => {
+          state.animeList = state.animeList.filter((anime) => anime.id !== id);
         })),
-      sortAnime: (sortBy) =>
-        set((state) => {
-          const sortedList = [...state.animeList].sort((a, b) =>
-            sortBy === 'weight' ? b.weight - a.weight : b.addedAt - a.addedAt
-          );
-          return { animeList: sortedList };
-        }),
     }),
     { name: 'watch-later-storage' }
   )

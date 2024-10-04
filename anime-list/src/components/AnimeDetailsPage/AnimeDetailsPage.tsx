@@ -5,7 +5,8 @@ interface AnimeDetailsPageProps {
     title: string;
     image_url: string;
     synopsis: string;
-    [key: string]: any;
+    episodes?: number;
+    score?: number;
   };
 }
 
@@ -14,7 +15,8 @@ const AnimeDetailsPage: React.FC<AnimeDetailsPageProps> = ({ anime }) => (
     <h1>{anime.title}</h1>
     <img src={anime.image_url} alt={anime.title} />
     <p>{anime.synopsis}</p>
-    {/* Можно добавить больше информации о аниме */}
+    {anime.episodes && <p>Episodes: {anime.episodes}</p>}
+    {anime.score && <p>Score: {anime.score}</p>}
   </div>
 );
 

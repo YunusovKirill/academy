@@ -1,16 +1,27 @@
-import React from 'react';
 import { useWatchLaterStore } from '../../store/watchLaterStore';
 
-const AddToWatchLaterButton: React.FC<{ anime: any }> = ({ anime }) => {
+interface Anime {
+  mal_id: number;
+  title: string;
+  image_url: string;
+}
+
+interface AddToWatchLaterButtonProps {
+  anime: Anime;
+}
+
+const AddToWatchLaterButton: React.FC<AddToWatchLaterButtonProps> = ({ anime }) => {
   const { addAnime } = useWatchLaterStore();
 
   const handleAdd = () => {
     const weight = prompt('Expected rating (1-10):', '1');
+    const parsedWeight = Number(weight);
     addAnime({
       id: anime.mal_id,
       title: anime.title,
       image: anime.image_url,
-      weight: Number(weight) || 1,
+      weight: !isNaN(parsedWeight) && parsedWeight > 0 ? parsedWeight : 1,
+      addedAt: 0,
     });
   };
 

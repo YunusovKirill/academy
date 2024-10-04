@@ -1,7 +1,11 @@
 import React from 'react';
 import { usePaginationStore } from '../../store/paginatoinStore';
 
-const Pagination: React.FC<{ totalItems: number }> = ({ totalItems }) => {
+interface PaginationProps {
+  totalItems: number;
+}
+
+const Pagination: React.FC<PaginationProps> = ({ totalItems }) => {
   const { currentPage, itemsPerPage, setPage } = usePaginationStore();
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 

@@ -2,13 +2,38 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAnimeStore } from '../../store/animeStore';
 
+interface Genre {
+  mal_id: number;
+  name: string;
+}
+
+interface AnimeDetail {
+  title: string;
+  image_url: string;
+  synopsis: string;
+  score: number;
+  favorites: number;
+  genres: Genre[];
+}
+
 const AnimeDetail: React.FC = () => {
   const { mal_id } = useParams<{ mal_id: string }>();
   const { animeDetail, fetchAnimeDetail } = useAnimeStore();
 
   useEffect(() => {
-    fetchAnimeDetail(mal_id);
-  }, [mal_id]);
+    if (mal_id) {
+      fetchAnimeDetail(Number(mal_id));
+    }
+  }, [mal_id, fetchAnimeDetail]);
+
+  useEffect(() => {
+    if (animeDetail) {
+    }
+  }, [animeDetail]);
+
+  if (!animeDetail) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="anime-detail">
@@ -18,11 +43,10 @@ const AnimeDetail: React.FC = () => {
       <p>Score: {animeDetail.score}</p>
       <p>Favorites: {animeDetail.favorites}</p>
       <div className="genres">
-        {animeDetail.genres.map(genre => (
+        {animeDetail.genres.map((genre: Genre) => (
           <span key={genre.mal_id}>{genre.name}</span>
         ))}
       </div>
-      {/* Остальные данные: трейлер, продюсеры, связанные аниме */}
     </div>
   );
 };

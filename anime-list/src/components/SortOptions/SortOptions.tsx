@@ -1,13 +1,24 @@
 import React from 'react';
-import { useWatchLaterStore } from '../../store/watchLaterStore';
+import { useSortStore } from '../../store/sortStore';
 
 const SortOptions: React.FC = () => {
-  const { sortAnime } = useWatchLaterStore();
+  const { sortCriteria, setSortCriteria } = useSortStore();
+
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortCriteria(event.target.value);
+  };
 
   return (
     <div className="sort-options">
-      <button onClick={() => sortAnime('weight')}>Sort by Weight</button>
-      <button onClick={() => sortAnime('date')}>Sort by Date</button>
+      <label htmlFor="sort">Sort by: </label>
+      <select id="sort" value={sortCriteria} onChange={handleSortChange}>
+        <option value="popularity">Popularity (Score)</option>
+        <option value="score">Score</option>
+        <option value="favorites">Favorites</option>
+        <option value="episodes">Episodes</option>
+        <option value="start">Start Date</option>
+        <option value="end">End Date</option>
+      </select>
     </div>
   );
 };

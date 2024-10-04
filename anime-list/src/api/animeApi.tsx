@@ -4,6 +4,23 @@ const api = axios.create({
   baseURL: 'https://api.jikan.moe/v4',
 });
 
+interface Anime {
+  synopsis: string;
+  score: number;
+  genres: any;
+  mal_id: number;
+  title: string;
+  images: {
+    jpg: {
+      image_url: string;
+    };
+  };
+}
+
+interface FetchAnimeListResponse {
+  data: Anime[];
+}
+
 interface FetchAnimeListParams {
   page?: number;
   limit?: number;
@@ -21,9 +38,9 @@ interface FetchAnimeListParams {
 }
 
 export const fetchAnimeListFromAPI = (params: FetchAnimeListParams) => {
-  return api.get('/anime', { params });
+  return api.get<FetchAnimeListResponse>('/anime', { params });
 };
 
 export const fetchAnimeDetails = (id: number) => {
-  return api.get(`/anime/${id}`);
+  return api.get<Anime>(`/anime/${id}`);
 };
