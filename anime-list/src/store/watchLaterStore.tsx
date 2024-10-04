@@ -1,51 +1,41 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Anime } from '../types/types';
 
-interface WatchLaterStore {
-  watchLaterList: { anime: Anime, rating: number, addedAt: Date }[];
-  addToWatchLater: (anime: Anime, rating?: number) => void;
-  removeFromWatchLater: (mal_id: number) => void;
-  setRating: (mal_id: number, rating: number) => void;
-  sortedWatchLaterList: (sortBy: string) => { anime: Anime, rating: number, addedAt: Date }[];
+interface WatchLaterAnime {
+  id: number;
+  title: string;
+  image: string;
+  weight: number;
+  addedAt: number;
 }
 
-export const useWatchLaterStore = create(persist<WatchLaterStore>((set, get) => ({
-  watchLaterList: [],
-  
-  // Добавление в список
-  addToWatchLater: (anime, rating = 1) => {
-    set((state) => ({
-      watchLaterList: [...state.watchLaterList, { anime, rating, addedAt: new Date() }]
-    }));
-  },
+interface WatchLaterState {
+  animeList: WatchLaterAnime[];
+  addAnime: (anime: WatchLaterAnime) => void;
+  removeAnime: (id: number) => void;
+  sortAnime: (sortBy: 'weight' | 'date') => void;
+}
 
-  // Удаление из списка
-  removeFromWatchLater: (mal_id) => {
-    set((state) => ({
-      watchLaterList: state.watchLaterList.filter(item => item.anime.mal_id !== mal_id)
-    }));
-  },
-
-  // Установка рейтинга
-  setRating: (mal_id, rating) => {
-    set((state) => ({
-      watchLaterList: state.watchLaterList.map(item =>
-        item.anime.mal_id === mal_id ? { ...item, rating } : item
-      )
-    }));
-  },
-
-  // Сортировка по дате добавления и весу
-  sortedWatchLaterList: (sortBy) => {
-    const list = [...get().watchLaterList];
-    if (sortBy === 'rating') {
-      return list.sort((a, b) => b.rating - a.rating || new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime());
-    } else if (sortBy === 'date') {
-      return list.sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime());
-    }
-    return list;
-  },
-}), {
-  name: 'watch-later-storage', // ключ для LocalStorage
-}));
+export const useWatchLaterStore = create(
+  persist<WatchLaterState>(
+    (set) => ({
+      animeList: [],
+      addAnime: (anime) =>
+        set((state) => ({
+          animeList: [...state.animeList, { ...anime, addedAt: Date.now() }],
+        })),
+      removeAnime: (id) =>
+        set((state) => ({
+          animeList: state.animeList.filter((anime) => anime.id !== id),
+        })),
+      sortAnime: (sortBy) =>
+        set((state) => {
+          const sortedList = [...state.animeList].sort((a, b) =>
+            sortBy === 'weight' ? b.weight - a.weight : b.addedAt - a.addedAt
+          );
+          return { animeList: sortedList };
+        }),
+    }),
+    { name: 'watch-later-storage' }
+  )
+);

@@ -1,29 +1,29 @@
 import axios from 'axios';
-import { useAnimeStore } from '../store/animeStore';
 
 const api = axios.create({
-  baseURL: 'http://discord.jikan.moe/v4',
-  timeout: 10000, // время ожидания ответа
+  baseURL: 'https://api.jikan.moe/v4',
 });
 
-// Функция для получения списка аниме
+interface FetchAnimeListParams {
+  page?: number;
+  limit?: number;
+  q?: string;
+  type?: string;
+  rating?: string;
+  status?: string;
+  start_date?: string;
+  end_date?: string;
+  genres?: string;
+  genres_exclude?: string;
+  producers?: string;
+  order_by?: string;
+  sort?: 'asc' | 'desc';
+}
 
-export const fetchAnimeList = async () => {
-  const { filters, sortOptions, currentPage } = useAnimeStore.getState();
-  
-  const params = {
-    ...filters,               // Добавляем фильтры
-    order_by: sortOptions.order_by, 
-    sort: sortOptions.sort,
-    page: currentPage,        // Добавляем пагинацию
-  };
-
-  const response = await api.get('/anime', { params });
-  return response.data;
+export const fetchAnimeListFromAPI = (params: FetchAnimeListParams) => {
+  return api.get('/anime', { params });
 };
 
-// Функция для получения деталей аниме
-export const fetchAnimeDetail = async (mal_id: string) => {
-  const response = await api.get(`/anime/${mal_id}`);
-  return response.data;
+export const fetchAnimeDetails = (id: number) => {
+  return api.get(`/anime/${id}`);
 };

@@ -1,32 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useAnimeStore } from './store/animeStore';
-import AnimeCard from './AnimeCard';
-import Pagination from './components/Pagination/Pagination';
-import Filters from './components/Filters/Filters';
-import SortOptions from './components/SortOptions/SortOptions';
-import SearchBar from './SearchBar';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import HomePage from './components/HomePage/HomePage';
+import WatchLaterPage from './components/WatchLaterPage/WatchLaterPage';
+import AnimeDetailsLoader from './components/AnimeDetailsLoader/AnimeDetailsLoader';
 
-const AnimeList: React.FC = () => {
-  const { animeList, fetchAnime, currentPage, filters, sortOptions } = useAnimeStore();
-  
-  // Fetch anime when filters, sort options, or pagination change
-  useEffect(() => {
-    fetchAnime();
-  }, [currentPage, filters, sortOptions]);
+const App: React.FC = () => (
+  <Router>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/watch-later" element={<WatchLaterPage />} />
+      <Route path="/anime/:id" element={<AnimeDetailsLoader />} />
+    </Routes>
+  </Router>
+);
 
-  return (
-    <div className="anime-list">
-      <SearchBar />
-      <Filters />
-      <SortOptions />
-      <div className="anime-cards">
-        {animeList.map(anime => (
-          <AnimeCard key={anime.mal_id} anime={anime} />
-        ))}
-      </div>
-      <Pagination />
-    </div>
-  );
-};
-
-export default AnimeList;
+export default App;

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAnimeStore } from '../store/animeStore';
+import { useAnimeStore } from '../../store/animeStore';
 
 const AnimeDetail: React.FC = () => {
   const { mal_id } = useParams<{ mal_id: string }>();

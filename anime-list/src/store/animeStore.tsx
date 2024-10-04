@@ -1,34 +1,15 @@
-import create from 'zustand';
-import { fetchAnimeList, fetchAnimeDetail } from '../api/animeApi';
-import { Anime, AnimeListResponse } from '../types/types';
+import { create } from 'zustand';
 
-interface AnimeStore {
-  animeList: Anime[];
-  currentPage: number;
-  filters: any; // сюда можно добавить типизацию для фильтров
-  sortOptions: string;
-  fetchAnime: () => Promise<void>;
-  setFilters: (filters: any) => void;
-  setSortOptions: (sort: string) => void;
-  setPage: (page: number) => void;
+interface AnimeState {
+  animeList: any[];
+  fetchAnime: () => void;
 }
 
-export const useAnimeStore = create<AnimeStore>((set, get) => ({
+export const useAnimeStore = create<AnimeState>((set) => ({
   animeList: [],
-  currentPage: 1,
-  filters: {},
-  sortOptions: '',
   fetchAnime: async () => {
-    const { currentPage, filters, sortOptions } = get();
-    const params = {
-      page: currentPage,
-      ...filters,
-      order_by: sortOptions,
-    };
-    const response: AnimeListResponse = await fetchAnimeList(params);
-    set({ animeList: response.data });
+    const response = await fetch('https://api.jikan.moe/v4/anime');
+    const data = await response.json();
+    set({ animeList: data.data });
   },
-  setFilters: (filters) => set({ filters }),
-  setSortOptions: (sort) => set({ sortOptions: sort }),
-  setPage: (page) => set({ currentPage: page }),
 }));
