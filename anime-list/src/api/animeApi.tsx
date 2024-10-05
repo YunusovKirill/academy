@@ -7,7 +7,7 @@ const api = axios.create({
 interface Anime {
   synopsis: string;
   score: number;
-  genres: any;
+  genres: string;
   mal_id: number;
   title: string;
   images: {

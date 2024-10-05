@@ -31,7 +31,7 @@ interface Anime {
 }
 
 const AnimeList: React.FC = () => {
-  const { animeList, fetchAnime, filters } = useAnimeStore();
+  const { animeList, fetchAnime } = useAnimeStore();
   const { currentPage, itemsPerPage } = usePaginationStore();
   const { sortCriteria } = useSortStore();
 
@@ -39,73 +39,26 @@ const AnimeList: React.FC = () => {
     fetchAnime();
   }, [fetchAnime]);
 
-  const genreMap: { [key: number]: string } = {
-    1: 'Action',
-    2: 'Adventure',
-    3: 'Comedy',
-    4: 'Drama',
-    // Добавь остальные жанры
-  };
-
-  const studioMap: { [key: number]: string } = {
-    1: 'Sunrise',
-    2: 'Toei Animation',
-    // Добавить остальные студии
-  };
-
-  const filterAnime = (anime: Anime) => {
-     // Фильтрация по жанрам через отображение genreMap
-    if (filters.genres?.length && !filters.genres.some(genreId => anime.genres?.some(genre => genreMap[genreId] === genre.name))) {
-      return false;
-    }
-
-    // Фильтрация по исключённым жанрам через отображение genreMap
-    if (filters.excludedGenres?.length && filters.excludedGenres.some(genreId => anime.genres?.some(genre => genreMap[genreId] === genre.name))) {
-      return false;
-    }
-
-    // Фильтрация по рейтингу
-    if (filters.rating && anime.rating !== filters.rating) {
-      return false;
-    }
-
-    // Фильтрация по типу
-    if (filters.type && anime.type !== filters.type) {
-      return false;
-    }
-
-    // Фильтрация по статусу
-    if (filters.status && anime.status !== filters.status) {
-      return false;
-    }
-
-    // Фильтрация по студиям через отображение studioMap
-    if (filters.studios?.length && !filters.studios.some(studioId => anime.studios?.some(studio => studio.name === studioMap[studioId]))) {
-      return false;
-    }
-
-    // Фильтрация по периоду времени (корректная обработка дат)
-    const animeStartDate = anime.aired?.from ? Date.parse(anime.aired.from) : null;
-    const animeEndDate = anime.aired?.to ? Date.parse(anime.aired.to) : null;
-    const filterStartDate = filters.startDate ? Date.parse(filters.startDate) : null;
-    const filterEndDate = filters.endDate ? Date.parse(filters.endDate) : null;
-
-    if (filterStartDate && animeStartDate && animeStartDate < filterStartDate) {
-      return false;
-    }
-    if (filterEndDate && animeEndDate && animeEndDate > filterEndDate) {
-      return false;
-    }
-
-    return true;
-  };
+  if (!animeList || animeList.length === 0) {
+    return <div>Loading anime list...</div>;
+  }
 
   const sortAnime = (a: Anime, b: Anime) => {
-    const dateAStart = a.aired?.from ? Date.parse(a.aired.from) : -Infinity;
-    const dateBStart = b.aired?.from ? Date.parse(b.aired.from) : -Infinity;
+    const dateAStart = a.aired?.from && !isNaN(Date.parse(a.aired.from)) 
+      ? new Date(a.aired.from).getTime() 
+      : -Infinity;  
+
+    const dateBStart = b.aired?.from && !isNaN(Date.parse(b.aired.from)) 
+      ? new Date(b.aired.from).getTime() 
+      : -Infinity;  
     
-    const dateAEnd = a.aired?.to ? Date.parse(a.aired.to) : Infinity;
-    const dateBEnd = b.aired?.to ? Date.parse(b.aired.to) : Infinity;
+    const dateAEnd = a.aired?.to && !isNaN(Date.parse(a.aired.to)) 
+      ? new Date(a.aired.to).getTime() 
+      : Infinity;
+      
+    const dateBEnd = b.aired?.to && !isNaN(Date.parse(b.aired.to)) 
+      ? new Date(b.aired.to).getTime() 
+      : Infinity;
       
     switch (sortCriteria) {
       case 'score':
@@ -123,10 +76,9 @@ const AnimeList: React.FC = () => {
     }
   };
 
-  // Применяем фильтрацию и сортировку
-  const filteredAnimeList = animeList.filter(filterAnime).sort(sortAnime);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedList = filteredAnimeList.slice(startIndex, startIndex + itemsPerPage);
+  const sortedAnimeList = [...animeList].sort(sortAnime);
+  const paginatedList = sortedAnimeList.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <div className="anime-list">
@@ -156,7 +108,7 @@ const AnimeList: React.FC = () => {
           />
         );
       })}      
-      <Pagination totalItems={filteredAnimeList.length} />
+      <Pagination totalItems={animeList.length} />
     </div>
   );
 };

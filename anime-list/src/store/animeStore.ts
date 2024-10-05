@@ -17,10 +17,11 @@ interface Anime {
 }
 
 export enum Rating {
-  G = 'g',
-  PG = 'pg',
-  PG13 = 'pg13',
-  R = 'R - 17+ (violence & profanity)'
+  G = 'G',
+  PG = 'PG - Children',
+  PG13 = 'PG-13 - Teens 13 or older',
+  R = 'R - 17+ (violence & profanity)',
+  RPlus = 'R+ - Mild Nudity'
 }
 
 export enum Type {
@@ -31,35 +32,60 @@ export enum Type {
 }
 
 export enum Status {
-  Finished = 'finished',
-  Ongoing = 'ongoing',
+  Finished = 'Finished Airing',
+  Ongoing = 'Currently Airing',
+}
+
+interface Studio {
+  mal_id: number;
+  name: string;
 }
 
 interface Filters {
-  genres?: number[];           // Массив жанров
-  excludedGenres?: number[];    // Массив исключённых жанров
-  studios?: number[];           // Массив студий
-  rating?: Rating;              // Рейтинг аниме
-  type?: Type;                  // Тип аниме (TV, Movie и т.д.)
-  status?: Status;              // Статус аниме (Finished, Ongoing)
-  startDate?: string;           // Начало периода
-  endDate?: string;             // Конец периода
+  genres?: number[];
+  excludedGenres?: number[];
+  studios?: number[];
+  rating?: Rating;
+  type?: Type;
+  status?: Status;
+  startDate?: string;
+  endDate?: string;
 }
 
 interface AnimeState {
   animeList: Anime[];
   animeDetail?: Anime | null;
   filters: Filters;
+  genres?: { mal_id: number; name: string }[];
+  studios?: Studio[];
   fetchAnime: () => void;
   fetchAnimeDetail: (id: number) => void;
+  fetchGenres: () => void;
+  // fetchStudios: () => void;
   setFilters: (filters: Filters) => void;
 }
+
+let lastRequestTime = 0;
+
+const fetchWithDelay = async (url: string, delay: number = 30000) => {
+  const currentTime = Date.now();
+  const timeSinceLastRequest = currentTime - lastRequestTime;
+
+  if (timeSinceLastRequest < delay) {
+    await new Promise((resolve) => setTimeout(resolve, delay - timeSinceLastRequest));
+  }
+
+  lastRequestTime = Date.now();
+  return fetch(url);
+};
 
 export const useAnimeStore = create<AnimeState>((set) => ({
   animeList: [],
   animeDetail: null,
   filters: {},
-  
+  genres: [],
+  studios: [],
+
   fetchAnime: async () => {
     const response = await fetch('https://api.jikan.moe/v4/anime');
     const data = await response.json();
@@ -76,7 +102,33 @@ export const useAnimeStore = create<AnimeState>((set) => ({
     }));
   },
 
-  setFilters: (newFilters: Partial<Filters>) => 
+  fetchGenres: async () => {
+    try {
+      const response = await fetchWithDelay('https://api.jikan.moe/v4/genres/anime', 5000); // 30 секунд задержки
+      if (!response.ok) throw new Error(`Error: ${response.status}`);
+      const data = await response.json();
+      set(produce((state: AnimeState) => {
+        state.genres = data.data;
+      }));
+    } catch (error) {
+      console.error('Failed to fetch genres:', error);
+    }
+  },
+
+  // fetchStudios: async () => {
+  //   try {
+  //     const response = await fetchWithDelay('https://api.jikan.moe/v4/producers', 60000); // 30 секунд задержки
+  //     if (!response.ok) throw new Error(`Error: ${response.status}`);
+  //     const data = await response.json();
+  //     set(produce((state: AnimeState) => {
+  //       state.studios = data.data;
+  //     }));
+  //   } catch (error) {
+  //     console.error('Failed to fetch studios:', error);
+  //   }
+  // },
+
+  setFilters: (newFilters: Partial<Filters>) =>
     set(produce((state: AnimeState) => {
       state.filters = { ...state.filters, ...newFilters };
     })),
