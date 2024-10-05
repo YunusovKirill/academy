@@ -1,42 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import { useAnimeStore, Rating, Status, Type } from '../../store/animeStore';
 
-// Определение интерфейсов для структуры аниме и студий
 interface Studio {
-  id: number;
+  mal_id: number;
+  name: string;
+}
+
+interface Genre {
+  mal_id: number;
   name: string;
 }
 
 interface Anime {
   mal_id: number;
   title: string;
-  studios: Studio[];
+  studios?: Studio[];
+  genres?: Genre[];
 }
 
-// Функция для извлечения уникальных студий из списка аниме
 const getUniqueStudios = (animeList: Anime[]): Studio[] => {
   return [...new Map(
-    animeList.flatMap(anime => anime.studios) // Извлекаем студии из каждого объекта аниме
-    .map(studio => [studio.id, studio])      // Создаем Map для фильтрации уникальных студий
+    animeList
+      .filter(anime => anime.studios && anime.studios.length > 0)
+      .flatMap(anime => anime.studios || [])
+      .map(studio => [studio.mal_id, studio])
+  ).values()];
+};
+
+const getUniqueGenres = (animeList: Anime[]): Genre[] => {
+  return [...new Map(
+    animeList
+      .filter(anime => anime.genres && anime.genres.length > 0)
+      .flatMap(anime => anime.genres || [])
+      .map(genre => [genre.mal_id, genre])
   ).values()];
 };
 
 const Filters: React.FC = () => {
-  const { animeList, setFilters } = useAnimeStore(); // Используем глобальное состояние для получения списка аниме
-  // const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
-  // const [excludedGenres, setExcludedGenres] = useState<number[]>([]);
+  const { animeList, setFilters } = useAnimeStore();
+  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+  const [excludedGenres, setExcludedGenres] = useState<number[]>([]);
   const [selectedStudios, setSelectedStudios] = useState<number[]>([]);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [studios, setStudios] = useState<Studio[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
 
   useEffect(() => {
-    // Извлекаем уникальные студии из глобального списка аниме
+    // Извлекаем уникальные студии и жанры из глобального списка аниме
     if (animeList.length > 0) {
       const uniqueStudios = getUniqueStudios(animeList);
+      const uniqueGenres = getUniqueGenres(animeList);
       setStudios(uniqueStudios);
+      setGenres(uniqueGenres);
     }
-  }, [animeList]); // Вызываем useEffect при изменении списка аниме
+  }, [animeList]);
 
   const handleToggle = (selectedList: number[], setSelected: React.Dispatch<React.SetStateAction<number[]>>, id: number, filterName: string) => {
     const updatedList = selectedList.includes(id)
@@ -51,37 +69,46 @@ const Filters: React.FC = () => {
       {/* Фильтр по жанрам */}
       <div>
         <label>Genres:</label>
-        {/* Здесь можно отобразить список жанров */}
+        {genres.map((genre) => (
+          <div key={genre.mal_id}>
+            <input
+              type="checkbox"
+              value={genre.mal_id}
+              onChange={() => handleToggle(selectedGenres, setSelectedGenres, genre.mal_id, 'genres')}
+            />
+            {genre.name}
+          </div>
+        ))}
       </div>
 
       {/* Исключение жанров */}
       <div>
         <label>Exclude Genres:</label>
-        {/* Здесь можно отобразить список жанров для исключения */}
+        {genres.map((genre) => (
+          <div key={genre.mal_id}>
+            <input
+              type="checkbox"
+              value={genre.mal_id}
+              onChange={() => handleToggle(excludedGenres, setExcludedGenres, genre.mal_id, 'excludedGenres')}
+            />
+            {genre.name}
+          </div>
+        ))}
       </div>
 
       {/* Фильтр по студиям */}
       <div>
         <label>Studios:</label>
         {studios.map((studio) => (
-          <div key={studio.id}>
+          <div key={studio.mal_id}>
             <input
               type="checkbox"
-              value={studio.id}
-              onChange={() => handleToggle(selectedStudios, setSelectedStudios, studio.id, 'studios')}
+              value={studio.mal_id}
+              onChange={() => handleToggle(selectedStudios, setSelectedStudios, studio.mal_id, 'studios')}
             />
             {studio.name}
           </div>
         ))}
-      </div>
-
-      {/* Фильтр по дате начала и окончания */}
-      <div>
-        <label>Start Date:</label>
-        <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-        <label>End Date:</label>
-        <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-        <button onClick={() => setFilters({ startDate, endDate })}>Apply Date</button>
       </div>
 
       {/* Фильтр по рейтингу */}
@@ -114,6 +141,15 @@ const Filters: React.FC = () => {
           <option value={Status.Finished}>Finished</option>
           <option value={Status.Ongoing}>Ongoing</option>
         </select>
+      </div>
+
+      {/* Фильтр по дате начала и окончания */}
+      <div>
+        <label>Start Date:</label>
+        <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+        <label>End Date:</label>
+        <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+        <button onClick={() => setFilters({ startDate, endDate })}>Apply Date</button>
       </div>
     </div>
   );

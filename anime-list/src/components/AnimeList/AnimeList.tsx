@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
-import { useAnimeStore } from '../../store/animeStore';
+import { Studio, useAnimeStore } from '../../store/animeStore';
 import { usePaginationStore } from '../../store/paginatoinStore';
 import { useSortStore } from '../../store/sortStore';
 import AnimeCard from '../AnimeCard/AnimeCard';
 import Pagination from '../Pagination/Pagination';
 import SortOptions from '../SortOptions/SortOptions';
 import Filters from '../Filters/Filters';
+import { Genre } from '../../types/types';
+import SearchBar from '../SearchBar/SearchBar';
+import { Link } from 'react-router-dom';
 
 interface Anime {
   mal_id: number;
@@ -17,21 +20,21 @@ interface Anime {
   };
   synopsis: string;
   score: number;
-  rating?: string;
   favorites: number;
+  studios?: Studio[];
+  genres?: Genre[];
+  rating?: string;
   episodes?: number;
+  type?: string;
+  status?: string;
   aired?: {
     from?: string;
     to?: string;
   };
-  type?: string;
-  status?: string;
-  genres?: { name: string }[];
-  studios?: { name: string }[];
 }
 
 const AnimeList: React.FC = () => {
-  const { animeList, fetchAnime } = useAnimeStore();
+  const { filteredAnimeList, fetchAnime } = useAnimeStore();
   const { currentPage, itemsPerPage } = usePaginationStore();
   const { sortCriteria } = useSortStore();
 
@@ -39,19 +42,15 @@ const AnimeList: React.FC = () => {
     fetchAnime();
   }, [fetchAnime]);
 
-  if (!animeList || animeList.length === 0) {
-    return <div>Loading anime list...</div>;
-  }
-
-  const sortAnime = (a: Anime, b: Anime) => {
+  const sortAnime = (a: Anime, b: Anime): number => {
     const dateAStart = a.aired?.from && !isNaN(Date.parse(a.aired.from)) 
       ? new Date(a.aired.from).getTime() 
       : -Infinity;  
-
+  
     const dateBStart = b.aired?.from && !isNaN(Date.parse(b.aired.from)) 
       ? new Date(b.aired.from).getTime() 
       : -Infinity;  
-    
+  
     const dateAEnd = a.aired?.to && !isNaN(Date.parse(a.aired.to)) 
       ? new Date(a.aired.to).getTime() 
       : Infinity;
@@ -77,11 +76,13 @@ const AnimeList: React.FC = () => {
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const sortedAnimeList = [...animeList].sort(sortAnime);
+  const sortedAnimeList = [...filteredAnimeList].sort(sortAnime);
   const paginatedList = sortedAnimeList.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <div className="anime-list">
+      <Link to="/watch-later">Go to Watch Later</Link>
+      <SearchBar />
       <SortOptions />
       <Filters />
       {paginatedList.map((anime: Anime) => {
@@ -89,6 +90,7 @@ const AnimeList: React.FC = () => {
           <AnimeCard
             key={anime.mal_id}
             anime={{
+              mal_id: anime.mal_id,
               title: anime.title,
               image_url: anime.images.jpg.image_url,
               synopsis: anime.synopsis,
@@ -108,7 +110,7 @@ const AnimeList: React.FC = () => {
           />
         );
       })}      
-      <Pagination totalItems={animeList.length} />
+      <Pagination totalItems={filteredAnimeList.length} />
     </div>
   );
 };

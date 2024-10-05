@@ -1,9 +1,8 @@
 import { create } from 'zustand';
 import { produce } from 'immer';
+import { Genre } from '../types/types';
 
 interface Anime {
-  image_url: string | undefined;
-  favorites: number;
   mal_id: number;
   title: string;
   images: {
@@ -13,7 +12,17 @@ interface Anime {
   };
   synopsis: string;
   score: number;
-  genres: { mal_id: number; name: string }[];
+  favorites: number;
+  studios?: Studio[];
+  genres?: Genre[];
+  rating?: string;
+  episodes?: number;
+  type?: string;
+  status?: string;
+  aired?: {
+    from?: string;
+    to?: string;
+  };
 }
 
 export enum Rating {
@@ -36,7 +45,7 @@ export enum Status {
   Ongoing = 'Currently Airing',
 }
 
-interface Studio {
+export interface Studio {
   mal_id: number;
   name: string;
 }
@@ -50,47 +59,33 @@ interface Filters {
   status?: Status;
   startDate?: string;
   endDate?: string;
+  searchQuery?: string;
 }
 
 interface AnimeState {
   animeList: Anime[];
+  filteredAnimeList: Anime[];
   animeDetail?: Anime | null;
   filters: Filters;
   genres?: { mal_id: number; name: string }[];
   studios?: Studio[];
   fetchAnime: () => void;
   fetchAnimeDetail: (id: number) => void;
-  fetchGenres: () => void;
-  // fetchStudios: () => void;
   setFilters: (filters: Filters) => void;
 }
 
-let lastRequestTime = 0;
-
-const fetchWithDelay = async (url: string, delay: number = 30000) => {
-  const currentTime = Date.now();
-  const timeSinceLastRequest = currentTime - lastRequestTime;
-
-  if (timeSinceLastRequest < delay) {
-    await new Promise((resolve) => setTimeout(resolve, delay - timeSinceLastRequest));
-  }
-
-  lastRequestTime = Date.now();
-  return fetch(url);
-};
-
 export const useAnimeStore = create<AnimeState>((set) => ({
   animeList: [],
+  filteredAnimeList: [],
   animeDetail: null,
   filters: {},
-  genres: [],
-  studios: [],
 
   fetchAnime: async () => {
     const response = await fetch('https://api.jikan.moe/v4/anime');
     const data = await response.json();
     set(produce((state: AnimeState) => {
       state.animeList = data.data;
+      state.filteredAnimeList = data.data;
     }));
   },
 
@@ -102,34 +97,70 @@ export const useAnimeStore = create<AnimeState>((set) => ({
     }));
   },
 
-  fetchGenres: async () => {
-    try {
-      const response = await fetchWithDelay('https://api.jikan.moe/v4/genres/anime', 5000); // 30 секунд задержки
-      if (!response.ok) throw new Error(`Error: ${response.status}`);
-      const data = await response.json();
-      set(produce((state: AnimeState) => {
-        state.genres = data.data;
-      }));
-    } catch (error) {
-      console.error('Failed to fetch genres:', error);
-    }
-  },
-
-  // fetchStudios: async () => {
-  //   try {
-  //     const response = await fetchWithDelay('https://api.jikan.moe/v4/producers', 60000); // 30 секунд задержки
-  //     if (!response.ok) throw new Error(`Error: ${response.status}`);
-  //     const data = await response.json();
-  //     set(produce((state: AnimeState) => {
-  //       state.studios = data.data;
-  //     }));
-  //   } catch (error) {
-  //     console.error('Failed to fetch studios:', error);
-  //   }
-  // },
-
   setFilters: (newFilters: Partial<Filters>) =>
-    set(produce((state: AnimeState) => {
-      state.filters = { ...state.filters, ...newFilters };
-    })),
-}));
+    set((state) => {
+      const filters = { ...state.filters, ...newFilters };
+
+      // Фильтруем список аниме
+      const filteredAnimeList = state.animeList.filter((anime) => {
+        // Фильтрация по жанрам
+        if (filters.genres && filters.genres.length > 0) {
+          const hasGenre = anime.genres?.some((genre) =>
+            filters.genres?.includes(genre.mal_id)
+          );
+          if (!hasGenre) return false;
+        }
+
+        // Исключение жанров
+        if (filters.excludedGenres && filters.excludedGenres.length > 0) {
+          const hasExcludedGenre = anime.genres?.some((genre) =>
+            filters.excludedGenres?.includes(genre.mal_id)
+          );
+          if (hasExcludedGenre) return false;
+        }
+
+        // Фильтрация по студиям
+        if (filters.studios && filters.studios.length > 0) {
+          const hasStudio = anime.studios?.some((studio) =>
+            filters.studios?.includes(studio.mal_id)
+          );
+          if (!hasStudio) return false;
+        }
+
+        // Фильтрация по рейтингу
+        if (filters.rating && anime.rating !== filters.rating) return false;
+
+        // Фильтрация по типу
+        if (filters.type && anime.type !== filters.type) return false;
+
+        // Фильтрация по статусу
+        if (filters.status && anime.status !== filters.status) return false;
+
+        // Фильтрация по дате начала
+        if (filters.startDate && anime.aired?.from) {
+          if (new Date(anime.aired.from) < new Date(filters.startDate)) {
+            return false;
+          }
+        }
+
+        // Фильтрация по дате окончания
+        if (filters.endDate && anime.aired?.to) {
+          if (new Date(anime.aired.to) > new Date(filters.endDate)) {
+            return false;
+          }
+        }
+
+        if (filters.searchQuery) {
+          const title = anime.title.toLowerCase();
+          const query = filters.searchQuery.toLowerCase();
+          if (!title.includes(query)) return false;
+        }
+
+        return true;
+      });
+
+      // Возвращаем отфильтрованный список
+      return { filters, filteredAnimeList };
+    }),
+  })
+);
