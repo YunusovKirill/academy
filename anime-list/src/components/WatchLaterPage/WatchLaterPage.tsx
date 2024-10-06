@@ -38,7 +38,7 @@ const WatchLaterPage: React.FC = () => {
 
   return (
     <div className="watch-later-page">
-      <Link to="/anime-list">Back to Anime List</Link> {/* Ссылка на список аниме */}
+      <Link to="/">Back to Anime List</Link> {/* Ссылка на список аниме */}
       
       {/* Контролы сортировки */}
       <div>
@@ -49,6 +49,7 @@ const WatchLaterPage: React.FC = () => {
         </select>
       </div>
 
+      {/* Показ минимальной информации о каждом аниме */}
       {paginatedList.map((anime) => (
         <AnimeCard
           key={anime.mal_id}
@@ -56,20 +57,10 @@ const WatchLaterPage: React.FC = () => {
             mal_id: anime.mal_id,
             title: anime.title,
             image_url: anime.image,
-            synopsis: anime.synopsis,
-            score: anime.score,
-            rating: anime.rating || 'Неизвестно',
-            favorites: anime.favorites,
-            episodes: anime.episodes,
-            aired: {
-              from: anime.aired?.from,
-              to: anime.aired?.to,
-            },
-            type: anime.type || 'Неизвестно',
-            status: anime.status || 'Неизвестно',
-            genres: anime.genres || [],
-            studios: anime.studios || [],
-        }}
+            score: anime.score, // Оценка
+            rating: anime.rating, // Рейтинг
+            favorites: anime.favorites, // Количество фаворитов
+          }}
           weight={anime.weight}
           dateAdded={anime.dateAdded} // Дата добавления
           onRemove={() => handleRemoveAnime(anime.mal_id)} // Кнопка удаления

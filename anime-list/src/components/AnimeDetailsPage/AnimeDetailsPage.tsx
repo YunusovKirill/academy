@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAnimeStore } from '../../store/animeStore';
+import { formatDate } from '../../utils/formatDate';
 
 const AnimeDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // Получаем id аниме из параметров URL
+  const { id } = useParams<{ id: string }>();
   const { animeDetail, fetchAnimeDetail } = useAnimeStore();
 
   useEffect(() => {
@@ -27,9 +28,9 @@ const AnimeDetailsPage: React.FC = () => {
     episodes,
     aired,
     synopsis,
-    studios,
-    genres,
-    themes,
+    studios = [],
+    genres = [],
+    themes = [],
     related,
     trailer,
   } = animeDetail;
@@ -49,16 +50,21 @@ const AnimeDetailsPage: React.FC = () => {
       <p>Score: {score}</p>
       <p>Rating: {rating}</p>
       <p>Favorites: {favorites}</p>
-      <p>Episodes: {episodes || 'Unknown'}</p>
-      <p>Aired: {aired.from ? `${aired.from} - ${aired.to || 'Ongoing'}` : 'Unknown'}</p>
+      <p>Episodes: {episodes || 'Онгоинг'}</p>
+      <p>Aired: {aired?.from ? `${formatDate(aired.from) } - ${formatDate(aired.to) || 'Онгоинг'}` : 'Неизвестно'}</p>
+
       <h3>Studios:</h3>
-      <p>{studios.map((studio) => studio.name).join(', ')}</p>
+      <p>{studios.length > 0 ? studios.map((studio) => studio.name).join(', ') : 'Неизвестно'}</p>
+
       <h3>Genres:</h3>
-      <p>{genres.map((genre) => genre.name).join(', ')}</p>
+      <p>{genres.length > 0 ? genres.map((genre) => genre.name).join(', ') : 'Неизвестно'}</p>
+
       <h3>Themes:</h3>
-      <p>{themes.map((theme) => theme.name).join(', ')}</p>
+      <p>{themes.length > 0 ? themes.map((theme) => theme.name).join(', ') : 'Неизвестно'}</p>
+
       <h3>Related:</h3>
-      <p>{related ? JSON.stringify(related) : 'No related anime'}</p>
+      <p>{related ? JSON.stringify(related) : 'Нет похожих аниме'}</p>
+
       <h3>Synopsis:</h3>
       <p>{synopsis}</p>
     </div>

@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
-import { Studio, useAnimeStore } from '../../store/animeStore';
+import { useAnimeStore } from '../../store/animeStore';
 import { usePaginationStore } from '../../store/paginatoinStore';
 import { useSortStore } from '../../store/sortStore';
 import AnimeCard from '../AnimeCard/AnimeCard';
 import Pagination from '../Pagination/Pagination';
 import SortOptions from '../SortOptions/SortOptions';
 import Filters from '../Filters/Filters';
-import { Genre } from '../../types/types';
 import SearchBar from '../SearchBar/SearchBar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Добавляем навигацию
 
 interface Anime {
   mal_id: number;
@@ -18,15 +17,10 @@ interface Anime {
       image_url: string;
     };
   };
-  synopsis: string;
   score: number;
   favorites: number;
-  studios?: Studio[];
-  genres?: Genre[];
   rating?: string;
-  episodes?: number;
-  type?: string;
-  status?: string;
+  episodes?: number | string; 
   aired?: {
     from?: string;
     to?: string;
@@ -37,6 +31,7 @@ const AnimeList: React.FC = () => {
   const { filteredAnimeList, fetchAnime } = useAnimeStore();
   const { currentPage, itemsPerPage } = usePaginationStore();
   const { sortCriteria } = useSortStore();
+  const navigate = useNavigate(); // Используем навигацию
 
   useEffect(() => {
     fetchAnime();
@@ -65,7 +60,9 @@ const AnimeList: React.FC = () => {
       case 'favorites':
         return b.favorites - a.favorites;
       case 'episodes':
-        return (b.episodes || 0) - (a.episodes || 0);
+        const episodesA = typeof a.episodes === 'number' ? a.episodes : 0;
+        const episodesB = typeof b.episodes === 'number' ? b.episodes : 0;
+        return episodesB - episodesA;
       case 'start':
         return dateAStart - dateBStart;
       case 'end':
@@ -85,31 +82,22 @@ const AnimeList: React.FC = () => {
       <SearchBar />
       <SortOptions />
       <Filters />
-      {paginatedList.map((anime: Anime) => {
-        return (
+      {paginatedList.map((anime: Anime) => (
+        <div key={anime.mal_id} onClick={() => navigate(`/anime/${anime.mal_id}`)}>
           <AnimeCard
-            key={anime.mal_id}
             anime={{
               mal_id: anime.mal_id,
               title: anime.title,
               image_url: anime.images.jpg.image_url,
-              synopsis: anime.synopsis,
               score: anime.score,
               rating: anime.rating || 'Неизвестно',
               favorites: anime.favorites,
-              episodes: anime.episodes,
-              aired: {
-                from: anime.aired?.from,
-                to: anime.aired?.to,
-              },
-              type: anime.type || 'Неизвестно',
-              status: anime.status || 'Неизвестно',
-              genres: anime.genres || [],
-              studios: anime.studios || [],
+              episodes: anime.episodes || 'Онгоинг',
+              aired: anime.aired,
             }}
           />
-        );
-      })}      
+        </div>
+      ))}      
       <Pagination totalItems={filteredAnimeList.length} />
     </div>
   );

@@ -1,25 +1,18 @@
 import { create } from 'zustand';
 import { persist, PersistStorage, StorageValue } from 'zustand/middleware';
-import { Genre } from '../types/types';
-import { Studio } from './animeStore';
 
 interface WatchLaterAnime {
-  mal_id: number
+  mal_id: number;
   title: string;
   image: string;
-  synopsis: string;
   score: number;
-  rating: string;
   favorites: number;
-  episodes?: number;
-  aired: {
+  rating: string;
+  episodes?: number | string;
+  aired?: {
     from?: string;
     to?: string;
   };
-  type: string;
-  status: string;
-  genres: Genre[];
-  studios: Studio[];
   weight: number; // Ожидаемый рейтинг
   dateAdded: number; // Дата добавления
 }

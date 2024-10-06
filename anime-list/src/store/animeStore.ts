@@ -5,6 +5,8 @@ import { Genre } from '../types/types';
 interface Anime {
   mal_id: number;
   title: string;
+  title_english?: string;
+  title_japanese?: string;
   images: {
     jpg: {
       image_url: string;
@@ -22,6 +24,11 @@ interface Anime {
   aired?: {
     from?: string;
     to?: string;
+  };
+  themes?: { name: string }[];
+  related?: { [key: string]: { name: string }[] };
+  trailer?: {
+    url?: string;
   };
 }
 
