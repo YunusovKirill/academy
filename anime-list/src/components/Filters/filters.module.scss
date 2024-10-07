@@ -1,0 +1,74 @@
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
+
+.filters {
+  display: flex;
+  font-size: 1em;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  margin-bottom: .5rem;
+
+  &__checkbox {
+    display: flex;
+    font-size: 13px;
+    align-items: center;
+
+    & input {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      margin-right: .5rem;
+      border: 1px solid $primary-color;
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+      background-color: transparent;
+
+      &:checked {
+        background-color: $primary-color;
+      }
+
+      &:checked::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: translate(-50%, -60%) rotate(45deg);
+      }
+    }
+  }
+
+  &__date {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: .85em;
+
+    &__label {
+      margin-bottom: 5px;
+    }
+
+    &__btn {
+      @include button
+    }
+
+    input {
+      padding: .5rem;
+      font-size: 1em;
+      color: #333;
+      border: 1px solid $primary-color;
+      border-radius: 4px;
+      background-color: #fff;
+
+      &:focus {
+        border-color: $primary-color;
+        outline: none;
+      }
+    }
+  }
+}

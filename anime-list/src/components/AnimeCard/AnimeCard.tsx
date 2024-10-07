@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import styles from './animeCard.module.scss'
 import { useWatchLaterStore } from "../../store/watchLaterStore";
 import { formatDate } from "../../utils/formatDate";
 
@@ -44,40 +44,40 @@ const AnimeCard: React.FC<AnimeCardProps> = ({ anime, weight, dateAdded, onRemov
   };
 
   return (
-    <div className="anime-card">
-      <Link to={`/anime/${anime.mal_id}`}>
-        <img src={anime.image_url} alt={anime.title} />
+    <div className={styles.anime__card}>
+      <img src={anime.image_url} alt={anime.title} />
+      <div className={styles.anime__card__content}>
         <h3>{anime.title}</h3>
-        <p>Score: {anime.score}</p>
-        <p>Rating: {anime.rating}</p>
-        <p>Favorites: {anime.favorites}</p>
-        <p>Episodes: {anime.episodes !== undefined ? anime.episodes : 'Онгоинг'}</p>
-        <p>Aired: {anime.aired?.from ? `${formatDate(anime.aired.from) } - ${formatDate(anime.aired.to) || 'Онгоинг'}` : 'Unknown'}</p>
-      </Link>
+        <p>Оценка: {anime.score}</p>
+        <p>Рейтинг: {anime.rating}</p>
+        <p>Избранное: {anime.favorites}</p>
+        <p>Эпизоды: {anime.episodes !== undefined ? anime.episodes : 'Онгоинг'}</p>
+        <p>Даты выхода: {anime.aired?.from ? `${formatDate(anime.aired.from) } - ${formatDate(anime.aired.to) || 'Онгоинг'}` : 'Неизветсно'}</p>
 
-      {weight !== undefined && (
-        <div>
-          <p>Expected Rating: 
-            <select
-              value={weight}
-              onChange={(e) => onRatingChange && onRatingChange(Number(e.target.value))}>
-              {Array.from({ length: 10 }, (_, i) => i + 1).map(value => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </p>
-        </div>
-      )}
+        {weight !== undefined && (
+          <div>
+            <p>Ожидаемый рейтинг: 
+              <select
+                value={weight}
+                onChange={(e) => onRatingChange && onRatingChange(Number(e.target.value))}>
+                {Array.from({ length: 10 }, (_, i) => i + 1).map(value => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </p>
+          </div>
+        )}
 
-      {dateAdded !== undefined && <p>Date Added: {formatDate(new Date(dateAdded).toISOString())}</p>}
+        {dateAdded !== undefined && <p>Дата добавления: {formatDate(new Date(dateAdded).toISOString())}</p>}
 
-      {onRemove && <button onClick={onRemove}>Remove</button>}
+        {onRemove && <button onClick={onRemove}>Удалить</button>}
 
-      {!isInWatchLater && (
-        <button onClick={handleAddToWatchLater}>Add to Watch Later</button>
-      )}
+        {!isInWatchLater && (
+          <button className={styles.anime__card__btn} onClick={handleAddToWatchLater}>Посмотреть позже</button>
+        )}
+      </div>
     </div>
   );
 };

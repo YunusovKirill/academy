@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import styles from './searchBar.module.scss'
+
+import { useState } from 'react';
 import { useAnimeStore } from '../../store/animeStore';
 
 const SearchBar: React.FC = () => {
@@ -11,10 +13,10 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <div className="search-bar">
+    <div className={styles.search__bar}>
       <input
         type="text"
-        placeholder="Search anime by title..."
+        placeholder="Напищите название аниме"
         value={query}
         onChange={handleSearch}
       />

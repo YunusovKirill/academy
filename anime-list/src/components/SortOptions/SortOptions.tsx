@@ -1,24 +1,27 @@
-import React from 'react';
+import styles from './sortOptions.module.scss';
 import { useSortStore } from '../../store/sortStore';
+import CustomSelect from '../CustomSelect/CustomSelect';
+
+const options = [
+  { value: 'popularity', label: 'Популярности' },
+  { value: 'score', label: 'Рейтингу' },
+  { value: 'favorites', label: 'Избранному' },
+  { value: 'episodes', label: 'Количеству эпизодов' },
+  { value: 'start', label: 'Начало' },
+  { value: 'end', label: 'Конец' },
+];
 
 const SortOptions: React.FC = () => {
   const { sortCriteria, setSortCriteria } = useSortStore();
 
-  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSortCriteria(event.target.value);
-  };
-
   return (
-    <div className="sort-options">
-      <label htmlFor="sort">Sort by: </label>
-      <select id="sort" value={sortCriteria} onChange={handleSortChange}>
-        <option value="popularity">Popularity (Score)</option>
-        <option value="score">Score</option>
-        <option value="favorites">Favorites</option>
-        <option value="episodes">Episodes</option>
-        <option value="start">Start Date</option>
-        <option value="end">End Date</option>
-      </select>
+    <div className={styles.sort__options}>
+      <label htmlFor="sort">Сортировать по:</label>
+      <CustomSelect 
+        options={options} 
+        selected={sortCriteria} 
+        onChange={setSortCriteria} 
+      />    
     </div>
   );
 };

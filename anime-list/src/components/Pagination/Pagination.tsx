@@ -1,4 +1,4 @@
-import React from 'react';
+import styles from './pagination.module.scss';
 import { usePaginationStore } from '../../store/paginatoinStore';
 
 interface PaginationProps {
@@ -12,19 +12,20 @@ const Pagination: React.FC<PaginationProps> = ({ totalItems }) => {
   const handlePageChange = (page: number) => setPage(page);
 
   return (
-    <div className="pagination">
+    <div className={styles.pagination}>
       <button
+        className={styles.pagination__button__left}
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-      >
-        Previous
+      > 
+        ➪
       </button>
-      <span>Page {currentPage} of {totalPages}</span>
+      <span className={styles.pagination__text}>{currentPage} из {totalPages}</span>
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       >
-        Next
+        ➪
       </button>
     </div>
   );

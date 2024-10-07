@@ -61,9 +61,9 @@ interface Filters {
   genres?: number[];
   excludedGenres?: number[];
   studios?: number[];
-  rating?: Rating;
-  type?: Type;
-  status?: Status;
+  rating?: Rating | string;
+  type?: Type | string;
+  status?: Status | string;
   startDate?: string;
   endDate?: string;
   searchQuery?: string;
@@ -157,6 +157,7 @@ export const useAnimeStore = create<AnimeState>((set) => ({
           }
         }
 
+        // Фильтрация по запросу поиска
         if (filters.searchQuery) {
           const title = anime.title.toLowerCase();
           const query = filters.searchQuery.toLowerCase();
@@ -169,5 +170,4 @@ export const useAnimeStore = create<AnimeState>((set) => ({
       // Возвращаем отфильтрованный список
       return { filters, filteredAnimeList };
     }),
-  })
-);
+}));

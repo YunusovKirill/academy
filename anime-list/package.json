@@ -1,11 +1,12 @@
 {
-  "name": "your-project",
+  "name": "anime-list",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "build-css": "sass src/scss:dist/css"
   },
   "dependencies": {
     "@types/react": "^18.3.10",
@@ -16,7 +17,6 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
-    "vite": "^5.4.8",
     "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
@@ -28,8 +28,10 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
+    "sass": "^1.79.4",
+    "sass-embedded": "^1.79.4",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.1"
+    "vite": "^5.4.8"
   }
 }

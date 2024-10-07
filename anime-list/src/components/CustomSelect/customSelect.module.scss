@@ -1,0 +1,59 @@
+@import '../../styles/variables.scss';
+
+.custom__select {
+  position: relative;
+  width: 100%;
+  padding: 10px;
+  cursor: pointer;
+  font-size: .85rem;
+  border: 1px solid $primary-color;
+
+  &__selected {
+    background-color: #f0f0f0;
+    border: 1px solid $primary-color;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: $primary-color-hover;
+    }
+  }
+
+  &__options {
+    position: absolute;
+    width: 100%;
+    top: 100%;
+    right: 0;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px); 
+    border: 1px solid $primary-color;
+    z-index: 100;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+
+    &--open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    &__option {
+      padding: 10px;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: $primary-color-hover;
+      }
+
+      &--selected {
+        background-color: $primary-color;
+        color: white;
+      }
+    }
+  }
+}

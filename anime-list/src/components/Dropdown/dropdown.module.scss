@@ -1,0 +1,44 @@
+@import '../../styles/variables.scss';
+
+.dropdown {
+  position: relative;  
+
+  &__toggle {
+    display: flex;
+    width: 100%;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid $primary-color;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px); 
+    cursor: pointer;
+
+    &:focus {
+      border-color: darken($primary-color, 10%);
+      outline: none;
+    }
+  
+    &:hover {
+      background-color: lighten($primary-color, 40%);
+    }
+  }
+
+  &__content {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 12rem;
+    padding: 10px;
+    margin-top: 5px;
+    top: 80%;
+    left: 0;
+    flex-direction: column;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid $primary-color;
+    z-index: 10;
+    overflow-y: auto;
+  }
+}

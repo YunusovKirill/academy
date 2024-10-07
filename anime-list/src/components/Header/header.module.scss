@@ -1,0 +1,39 @@
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
+
+.header {
+    display: flex;
+    width: 100%;
+    max-height: 4rem;
+    padding: 2.7rem 1rem 2.8rem 2rem;
+    margin-bottom: .8rem;
+    align-items: center;
+    box-shadow: 1px 2px 10px 0px rgba(0, 0, 0, 0.5);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    &__anime__list {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    & img {
+      width: 5rem;
+    }
+  
+    &__btn {
+      margin-left: 5px;
+      @include button
+    }
+
+    &__wl__page {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &__sort {
+        width: 80%;
+        margin-right: 5px;
+      }
+    }
+  }

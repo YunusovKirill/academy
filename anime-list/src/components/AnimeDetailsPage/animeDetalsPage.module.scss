@@ -1,0 +1,10 @@
+.anime__details__page {
+  display: flex;
+  flex-direction: column;
+  color: #FFF;
+  text-shadow: 
+    -1px -1px 0 #000,   /* верхний левый */
+     1px -1px 0 #000,   /* верхний правый */
+    -1px  1px 0 #000,   /* нижний левый */
+     1px  1px 0 #000;   /* нижний правый */
+}

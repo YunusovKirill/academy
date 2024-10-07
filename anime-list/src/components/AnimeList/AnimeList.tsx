@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAnimeStore } from '../../store/animeStore';
 import { usePaginationStore } from '../../store/paginatoinStore';
 import { useSortStore } from '../../store/sortStore';
 import AnimeCard from '../AnimeCard/AnimeCard';
 import Pagination from '../Pagination/Pagination';
-import SortOptions from '../SortOptions/SortOptions';
-import Filters from '../Filters/Filters';
-import SearchBar from '../SearchBar/SearchBar';
-import { Link, useNavigate } from 'react-router-dom'; // Добавляем навигацию
+import styles from './animeList.module.scss';
+import { Modal } from '../Modal/Modal';
+import AnimeDetailsPage from '../AnimeDetailsPage/AnimeDetailsPage';
+import Header from '../Header/Header';
 
 interface Anime {
   mal_id: number;
@@ -31,7 +31,8 @@ const AnimeList: React.FC = () => {
   const { filteredAnimeList, fetchAnime } = useAnimeStore();
   const { currentPage, itemsPerPage } = usePaginationStore();
   const { sortCriteria } = useSortStore();
-  const navigate = useNavigate(); // Используем навигацию
+  const [selectedAnimeId, setSelectedAnimeId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchAnime();
@@ -59,10 +60,10 @@ const AnimeList: React.FC = () => {
         return b.score - a.score;
       case 'favorites':
         return b.favorites - a.favorites;
-      case 'episodes':
+      case 'episodes': {
         const episodesA = typeof a.episodes === 'number' ? a.episodes : 0;
         const episodesB = typeof b.episodes === 'number' ? b.episodes : 0;
-        return episodesB - episodesA;
+        return episodesB - episodesA };
       case 'start':
         return dateAStart - dateBStart;
       case 'end':
@@ -76,29 +77,44 @@ const AnimeList: React.FC = () => {
   const sortedAnimeList = [...filteredAnimeList].sort(sortAnime);
   const paginatedList = sortedAnimeList.slice(startIndex, startIndex + itemsPerPage);
 
+  const handleAnimeClick = (animeId: number) => {
+    setSelectedAnimeId(animeId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <div className="anime-list">
-      <Link to="/watch-later">Go to Watch Later</Link>
-      <SearchBar />
-      <SortOptions />
-      <Filters />
-      {paginatedList.map((anime: Anime) => (
-        <div key={anime.mal_id} onClick={() => navigate(`/anime/${anime.mal_id}`)}>
-          <AnimeCard
-            anime={{
-              mal_id: anime.mal_id,
-              title: anime.title,
-              image_url: anime.images.jpg.image_url,
-              score: anime.score,
-              rating: anime.rating || 'Неизвестно',
-              favorites: anime.favorites,
-              episodes: anime.episodes || 'Онгоинг',
-              aired: anime.aired,
-            }}
-          />
+    <div className={styles.anime__list}>
+      <Header />
+      <div className={styles.container}>
+        <h1 className={styles.anime__list__title}>Список аниме</h1>
+        <div className={styles.anime__list__content}>
+          {paginatedList.map((anime: Anime) => (
+            <div className={styles.anime__list__items} key={anime.mal_id} onClick={() => handleAnimeClick(anime.mal_id)}>
+              <AnimeCard
+                anime={{
+                  mal_id: anime.mal_id,
+                  title: anime.title,
+                  image_url: anime.images.jpg.image_url,
+                  score: anime.score,
+                  rating: anime.rating || 'Неизвестно',
+                  favorites: anime.favorites,
+                  episodes: anime.episodes || 'Онгоинг',
+                  aired: anime.aired,
+                }}
+              />
+            </div>
+          ))}      
         </div>
-      ))}      
-      <Pagination totalItems={filteredAnimeList.length} />
+        <Pagination totalItems={filteredAnimeList.length} />
+        {/* Модальное окно для деталей аниме */}
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+          {selectedAnimeId && <AnimeDetailsPage animeId={selectedAnimeId} />}
+        </Modal>
+        </div>
     </div>
   );
 };

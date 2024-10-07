@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react';
+import styles from './watchLaterPage.module.scss'
+
+import { useEffect } from 'react';
 import { useWatchLaterStore } from '../../store/watchLaterStore';
 import { usePaginationStore } from '../../store/paginatoinStore';
 import Pagination from '../Pagination/Pagination';
-import { Link } from 'react-router-dom'; // Импортируем Link
-import AnimeCard from '../AnimeCard/AnimeCard'; // Импортируем AnimeCard
+import AnimeCard from '../AnimeCard/AnimeCard';
+import Header from '../Header/Header';
+import { useHeaderSortStore } from '../../store/headerSortStore';
 
 const WatchLaterPage: React.FC = () => {
-  const { sortedAnimeList, setWeight, removeAnime } = useWatchLaterStore(); // Подключаем сортировку и удаление
+  const { sortedAnimeList, setWeight, removeAnime } = useWatchLaterStore();
   const { currentPage, itemsPerPage, setPage, setItemsPerPage } = usePaginationStore();
-
-  const [sortBy, setSortBy] = React.useState<'weight' | 'date'>('weight'); // Состояние для сортировки
+  const { sortBy } = useHeaderSortStore();
 
   useEffect(() => {
     const handleResize = () => {
@@ -29,44 +31,38 @@ const WatchLaterPage: React.FC = () => {
   const paginatedList = sortedAnimeList(sortBy).slice(startIndex, startIndex + itemsPerPage);
 
   const handleRatingChange = (mal_id: number, weight: number) => {
-    setWeight(mal_id, weight); // Изменение рейтинга
+    setWeight(mal_id, weight);
   };
 
   const handleRemoveAnime = (mal_id: number) => {
-    removeAnime(mal_id); // Удаление аниме
+    removeAnime(mal_id);
   };
 
   return (
-    <div className="watch-later-page">
-      <Link to="/">Back to Anime List</Link> {/* Ссылка на список аниме */}
-      
-      {/* Контролы сортировки */}
-      <div>
-        <label>Sort by: </label>
-        <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'weight' | 'date')}>
-          <option value="weight">Weight</option>
-          <option value="date">Date Added</option>
-        </select>
+    <div className={styles.wl__page}>
+      <Header />
+      <div className={styles.container}>
+          {paginatedList.map((anime) => (
+            <div className={styles.wl__page__item}>
+              <AnimeCard
+                key={anime.mal_id}
+                anime={{
+                  mal_id: anime.mal_id,
+                  title: anime.title,
+                  image_url: anime.image,
+                  score: anime.score,
+                  rating: anime.rating,
+                  favorites: anime.favorites,
+                  aired: anime.aired,
+                }}
+                weight={anime.weight}
+                dateAdded={anime.dateAdded}
+                onRemove={() => handleRemoveAnime(anime.mal_id)}
+                onRatingChange={(newRating) => handleRatingChange(anime.mal_id, newRating)}
+              />
+            </div>
+          ))}
       </div>
-
-      {/* Показ минимальной информации о каждом аниме */}
-      {paginatedList.map((anime) => (
-        <AnimeCard
-          key={anime.mal_id}
-          anime={{
-            mal_id: anime.mal_id,
-            title: anime.title,
-            image_url: anime.image,
-            score: anime.score, // Оценка
-            rating: anime.rating, // Рейтинг
-            favorites: anime.favorites, // Количество фаворитов
-          }}
-          weight={anime.weight}
-          dateAdded={anime.dateAdded} // Дата добавления
-          onRemove={() => handleRemoveAnime(anime.mal_id)} // Кнопка удаления
-          onRatingChange={(newRating) => handleRatingChange(anime.mal_id, newRating)} // Изменение рейтинга
-        />
-      ))}
       <Pagination totalItems={paginatedList.length} />
     </div>
   );
