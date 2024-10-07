@@ -1,4 +1,5 @@
 import styles from './sortOptions.module.scss';
+
 import { useSortStore } from '../../store/sortStore';
 import CustomSelect from '../CustomSelect/CustomSelect';
 

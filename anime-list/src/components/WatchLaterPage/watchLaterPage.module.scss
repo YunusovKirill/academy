@@ -4,7 +4,13 @@
     padding: 0 3rem;    
   }
 
-  &__item {
-    margin-bottom: 1rem;
+  &__content {
+    margin-bottom: 10px;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 1rem;
+    }
   }
 }

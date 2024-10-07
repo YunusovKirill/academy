@@ -1,4 +1,3 @@
-// store/sortStore.ts
 import { create } from 'zustand';
 
 type SortOption = 'weight' | 'date';
@@ -9,6 +8,6 @@ interface HeaderSortStore {
 }
 
 export const useHeaderSortStore = create<HeaderSortStore>((set) => ({
-  sortBy: 'weight', // Значение по умолчанию
+  sortBy: 'weight',
   setSortBy: (sortBy) => set({ sortBy }),
 }));

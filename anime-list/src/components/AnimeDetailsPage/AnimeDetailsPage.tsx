@@ -47,7 +47,7 @@ const AnimeDetailsPage: React.FC<AnimeDetailsPageProps> = ({ animeId }) => {
       {title_japanese && <h2>Japanese: {title_japanese}</h2>}
       {trailer && trailer.url && (
         <div>
-          <h3>Trailer:</h3>
+          <h3>Трейлер:</h3>
           <iframe src={trailer.url} title="Anime Trailer" />
         </div>
       )}

@@ -1,6 +1,8 @@
 import styles from './animeCard.module.scss'
+
 import { useWatchLaterStore } from "../../store/watchLaterStore";
 import { formatDate } from "../../utils/formatDate";
+import CustomSelect from '../CustomSelect/CustomSelect';
 
 interface AnimeCardProps {
   anime: {
@@ -43,6 +45,25 @@ const AnimeCard: React.FC<AnimeCardProps> = ({ anime, weight, dateAdded, onRemov
     });
   };
 
+  const handleWeightOption = (value: string | number) => {
+    if (onRatingChange) {
+      onRatingChange(Number(value)); 
+    }
+  }
+
+  const WeightOption = [
+    { value: 1, label: 1 },
+    { value: 2, label: 2 },
+    { value: 3, label: 3 },
+    { value: 4, label: 4 },
+    { value: 5, label: 5 },
+    { value: 6, label: 6 },
+    { value: 7, label: 7 },
+    { value: 8, label: 8 },
+    { value: 9, label: 9 },
+    { value: 10, label: 10 },
+  ];
+
   return (
     <div className={styles.anime__card}>
       <img src={anime.image_url} alt={anime.title} />
@@ -56,24 +77,26 @@ const AnimeCard: React.FC<AnimeCardProps> = ({ anime, weight, dateAdded, onRemov
 
         {weight !== undefined && (
           <div>
-            <p>Ожидаемый рейтинг: 
-              <select
-                value={weight}
-                onChange={(e) => onRatingChange && onRatingChange(Number(e.target.value))}>
-                {Array.from({ length: 10 }, (_, i) => i + 1).map(value => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </p>
+            <p>Ожидаемый рейтинг:</p>
+              <div className={styles.anime__card__exp__rating}>
+                <CustomSelect
+                  options={WeightOption}
+                  selected={weight}
+                  onChange={handleWeightOption}
+                /> 
+              </div>
           </div>
         )}
 
         {dateAdded !== undefined && <p>Дата добавления: {formatDate(new Date(dateAdded).toISOString())}</p>}
 
-        {onRemove && <button onClick={onRemove}>Удалить</button>}
-
+        {onRemove && 
+        <button className={styles.anime__card__btn}  onClick={(e) => {
+        e.stopPropagation();
+        onRemove();
+        }}>
+          Удалить
+        </button>}
         {!isInWatchLater && (
           <button className={styles.anime__card__btn} onClick={handleAddToWatchLater}>Посмотреть позже</button>
         )}

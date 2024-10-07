@@ -9,6 +9,10 @@ const Pagination: React.FC<PaginationProps> = ({ totalItems }) => {
   const { currentPage, itemsPerPage, setPage } = usePaginationStore();
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
+  if (currentPage > totalPages && totalPages > 0) {
+    setPage(totalPages);
+  }
+
   const handlePageChange = (page: number) => setPage(page);
 
   return (

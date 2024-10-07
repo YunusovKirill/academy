@@ -13,15 +13,15 @@ interface WatchLaterAnime {
     from?: string;
     to?: string;
   };
-  weight: number; // Ожидаемый рейтинг
-  dateAdded: number; // Дата добавления
+  weight: number;
+  dateAdded: number;
 }
 
 interface WatchLaterStore {
   animeList: WatchLaterAnime[];
   addAnime: (anime: WatchLaterAnime) => void;
   removeAnime: (mal_id: number) => void;
-  setWeight: (mal_id: number, weight: number) => void; // Метод для изменения рейтинга ожидания
+  setWeight: (mal_id: number, weight: number) => void;
   sortedAnimeList: (sortBy: 'weight' | 'date') => WatchLaterAnime[];
 }
 
@@ -85,7 +85,7 @@ export const useWatchLaterStore = create<WatchLaterStore>()(
     }),
     {
       name: 'watch-later-storage',
-      storage: customLocalStorage, // Используем кастомное хранилище
+      storage: customLocalStorage,
     }
   )
 );

@@ -2,9 +2,9 @@ import styles from './customSelect.module.scss';
 import { useState } from 'react';
 
 interface CustomSelectProps {
-  options: { value: string, label: string }[];
-  selected: string;
-  onChange: (value: string) => void;
+  options: { value: string | number, label: string | number  }[];
+  selected: string | number;
+  onChange: (value: string | number) => void;
 }
 
 const CustomSelect: React.FC<CustomSelectProps> = ({ options, selected, onChange }) => {
@@ -14,7 +14,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ options, selected, onChange
     setIsOpen(!isOpen);
   };
 
-  const handleSelectOption = (value: string) => {
+  const handleSelectOption = (value: string | number) => {
     onChange(value);
     setIsOpen(false);
   };

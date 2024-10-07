@@ -4,6 +4,7 @@
   position: relative;
   width: 100%;
   padding: 10px;
+  text-align: center;
   cursor: pointer;
   font-size: .85rem;
   border: 1px solid $primary-color;
@@ -43,7 +44,6 @@
     }
 
     &__option {
-      padding: 10px;
       transition: background-color 0.2s ease;
 
       &:hover {

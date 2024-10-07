@@ -3,15 +3,19 @@ import styles from './watchLaterPage.module.scss'
 import { useEffect } from 'react';
 import { useWatchLaterStore } from '../../store/watchLaterStore';
 import { usePaginationStore } from '../../store/paginatoinStore';
+import { useHeaderSortStore } from '../../store/headerSortStore';
+import { useModalStore } from '../../store/modalStore';
 import Pagination from '../Pagination/Pagination';
 import AnimeCard from '../AnimeCard/AnimeCard';
 import Header from '../Header/Header';
-import { useHeaderSortStore } from '../../store/headerSortStore';
+import AnimeDetailsPage from '../AnimeDetailsPage/AnimeDetailsPage';
+import Modal from '../Modal/Modal';
 
 const WatchLaterPage: React.FC = () => {
   const { sortedAnimeList, setWeight, removeAnime } = useWatchLaterStore();
   const { currentPage, itemsPerPage, setPage, setItemsPerPage } = usePaginationStore();
   const { sortBy } = useHeaderSortStore();
+  const { isModalOpen, selectedAnimeId, openModal, closeModal } = useModalStore(); 
 
   useEffect(() => {
     const handleResize = () => {
@@ -43,7 +47,7 @@ const WatchLaterPage: React.FC = () => {
       <Header />
       <div className={styles.container}>
           {paginatedList.map((anime) => (
-            <div className={styles.wl__page__item}>
+            <div key={anime.mal_id} className={styles.wl__page__content} onClick={() => openModal(anime.mal_id)}>
               <AnimeCard
                 key={anime.mal_id}
                 anime={{
@@ -64,6 +68,9 @@ const WatchLaterPage: React.FC = () => {
           ))}
       </div>
       <Pagination totalItems={paginatedList.length} />
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+          {selectedAnimeId && <AnimeDetailsPage animeId={selectedAnimeId} />}
+      </Modal>
     </div>
   );
 };

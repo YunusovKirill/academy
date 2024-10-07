@@ -16,7 +16,7 @@ const SearchBar: React.FC = () => {
     <div className={styles.search__bar}>
       <input
         type="text"
-        placeholder="Напищите название аниме"
+        placeholder="Поиск"
         value={query}
         onChange={handleSearch}
       />

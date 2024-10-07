@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Rating, Status, Type } from './animeStore';
+import { Rating, Status, Type } from '../types/types';
 
 interface FilterStore {
   selectedGenres: number[];

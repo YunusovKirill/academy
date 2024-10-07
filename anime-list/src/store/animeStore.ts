@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { produce } from 'immer';
-import { Genre } from '../types/types';
+import { Filters, Genre, Studios } from '../types/types';
 
 interface Anime {
   mal_id: number;
@@ -15,7 +15,7 @@ interface Anime {
   synopsis: string;
   score: number;
   favorites: number;
-  studios?: Studio[];
+  studios?: Studios[];
   genres?: Genre[];
   rating?: string;
   episodes?: number;
@@ -32,50 +32,13 @@ interface Anime {
   };
 }
 
-export enum Rating {
-  G = 'G',
-  PG = 'PG - Children',
-  PG13 = 'PG-13 - Teens 13 or older',
-  R = 'R - 17+ (violence & profanity)',
-  RPlus = 'R+ - Mild Nudity'
-}
-
-export enum Type {
-  TV = 'TV',
-  Movie = 'Movie',
-  OVA = 'OVA',
-  Special = 'Special',
-}
-
-export enum Status {
-  Finished = 'Finished Airing',
-  Ongoing = 'Currently Airing',
-}
-
-export interface Studio {
-  mal_id: number;
-  name: string;
-}
-
-interface Filters {
-  genres?: number[];
-  excludedGenres?: number[];
-  studios?: number[];
-  rating?: Rating | string;
-  type?: Type | string;
-  status?: Status | string;
-  startDate?: string;
-  endDate?: string;
-  searchQuery?: string;
-}
-
 interface AnimeState {
   animeList: Anime[];
   filteredAnimeList: Anime[];
   animeDetail?: Anime | null;
   filters: Filters;
   genres?: { mal_id: number; name: string }[];
-  studios?: Studio[];
+  studios?: Studios[];
   fetchAnime: () => void;
   fetchAnimeDetail: (id: number) => void;
   setFilters: (filters: Filters) => void;
@@ -107,9 +70,7 @@ export const useAnimeStore = create<AnimeState>((set) => ({
   setFilters: (newFilters: Partial<Filters>) =>
     set((state) => {
       const filters = { ...state.filters, ...newFilters };
-
-      // Фильтруем список аниме
-      const filteredAnimeList = state.animeList.filter((anime) => {
+        const filteredAnimeList = state.animeList.filter((anime) => {
         // Фильтрация по жанрам
         if (filters.genres && filters.genres.length > 0) {
           const hasGenre = anime.genres?.some((genre) =>
@@ -167,7 +128,6 @@ export const useAnimeStore = create<AnimeState>((set) => ({
         return true;
       });
 
-      // Возвращаем отфильтрованный список
       return { filters, filteredAnimeList };
     }),
 }));

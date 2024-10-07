@@ -1,37 +1,41 @@
-// Типизация аниме
-export interface Anime {
-    mal_id: number;
-    title: string;
-    image_url: string;
-    score: number;
-    favorites: number;
-    episodes: number;
-    rating: string;
-    start_date: string;
-    end_date: string;
-    synopsis: string;
-    genres: Genre[];
-    producers: Producer[];
-    }
+export interface Filters {
+  genres?: number[];
+  excludedGenres?: number[];
+  studios?: number[];
+  rating?: Rating | string | number;
+  type?: Type | string | number;
+  status?: Status | string | number;
+  startDate?: string;
+  endDate?: string;
+  searchQuery?: string;
+}
 
-    // Типизация жанра
-    export interface Genre {
-    mal_id: number;
-    name: string;
-    }
+export enum Rating {
+  G = 'G',
+  PG = 'PG - Children',
+  PG13 = 'PG-13 - Teens 13 or older',
+  R = 'R - 17+ (violence & profanity)',
+  RPlus = 'R+ - Mild Nudity'
+}
 
-    // Типизация продюсера
-    export interface Producer {
-    mal_id: number;
-    name: string;
-    }
+export enum Type {
+  TV = 'TV',
+  Movie = 'Movie',
+  OVA = 'OVA',
+  Special = 'Special',
+}
 
-    // Ответ от API для списка аниме
-    export interface AnimeListResponse {
-    data: Anime[];
-    pagination: {
-        last_visible_page: number;
-        has_next_page: boolean;
-        current_page: number;
-    };
+export enum Status {
+  Finished = 'Finished Airing',
+  Ongoing = 'Currently Airing',
+}
+
+export interface Studios {
+  mal_id: number;
+  name: string;
+}
+
+export interface Genre {
+  mal_id: number;
+  name: string;
 }

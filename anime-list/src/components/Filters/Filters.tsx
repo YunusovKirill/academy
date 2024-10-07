@@ -1,28 +1,20 @@
-import { useState, useEffect } from 'react';
-import { useAnimeStore, Rating, Status, Type } from '../../store/animeStore';
-import Dropdown from '../Dropdown/Dropdown';
-import CustomSelect from '../CustomSelect/CustomSelect';  // Импортируем кастомный селектор
-import { useFilterStore } from '../../store/filterStore';
 import styles from './filters.module.scss';
 
-interface Studio {
-  mal_id: number;
-  name: string;
-}
+import { useState, useEffect } from 'react';
+import { useFilterStore } from '../../store/filterStore';
+import { useAnimeStore } from '../../store/animeStore';
+import { Genre, Rating, Status, Studios, Type } from '../../types/types';
+import Dropdown from '../Dropdown/Dropdown';
+import CustomSelect from '../CustomSelect/CustomSelect';
 
-interface Genre {
-  mal_id: number;
-  name: string;
-}
-
-interface Anime {
+interface AnimeFilter {
   mal_id: number;
   title: string;
-  studios?: Studio[];
+  studios?: Studios[];
   genres?: Genre[];
 }
 
-const getUniqueStudios = (animeList: Anime[]): Studio[] => {
+const getUniqueStudios = (animeList: AnimeFilter[]): Studios[] => {
   return [...new Map(
     animeList
       .filter(anime => anime.studios && anime.studios.length > 0)
@@ -31,7 +23,7 @@ const getUniqueStudios = (animeList: Anime[]): Studio[] => {
   ).values()];
 };
 
-const getUniqueGenres = (animeList: Anime[]): Genre[] => {
+const getUniqueGenres = (animeList: AnimeFilter[]): Genre[] => {
   return [...new Map(
     animeList
       .filter(anime => anime.genres && anime.genres.length > 0)
@@ -58,7 +50,7 @@ const Filters: React.FC = () => {
   const [selectedStudios, setSelectedStudios] = useState<number[]>([]);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-  const [studios, setStudios] = useState<Studio[]>([]);
+  const [studios, setStudios] = useState<Studios[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
 
   useEffect(() => {
@@ -104,17 +96,17 @@ const Filters: React.FC = () => {
     setFilters({ excludedGenres: updatedExcludedGenres });
   };
 
-  const handleSelectRating = (value: string) => {
+  const handleSelectRating = (value: string | number) => {
     setRating(value as Rating);
     setFilters({ rating: value });
   };
 
-  const handleSelectType = (value: string) => {
+  const handleSelectType = (value: string | number) => {
     setType(value as Type);
     setFilters({ type: value });
   };
 
-  const handleSelectStatus = (value: string) => {
+  const handleSelectStatus = (value: string | number) => {
     setStatus(value as Status);
     setFilters({ status: value });
 
@@ -126,7 +118,7 @@ const Filters: React.FC = () => {
     setEndDate('');
     setFilters({ startDate: '', endDate: '' });
   };
-  
+
   // -------------- Массивы для кастомного селекта
 
   const ratingOptions = [

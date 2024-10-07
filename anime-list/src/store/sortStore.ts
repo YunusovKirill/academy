@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
 interface SortState {
-  sortCriteria: string;
-  setSortCriteria: (criteria: string) => void;
+  sortCriteria: string | number;
+  setSortCriteria: (criteria: string | number) => void;
 }
 
 export const useSortStore = create<SortState>((set) => ({

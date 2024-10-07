@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import styles from './animeList.module.scss';
+
+import { useEffect } from 'react';
 import { useAnimeStore } from '../../store/animeStore';
 import { usePaginationStore } from '../../store/paginatoinStore';
 import { useSortStore } from '../../store/sortStore';
+import { useModalStore } from '../../store/modalStore';
+import { Modal } from '../Modal/Modal';
 import AnimeCard from '../AnimeCard/AnimeCard';
 import Pagination from '../Pagination/Pagination';
-import styles from './animeList.module.scss';
-import { Modal } from '../Modal/Modal';
 import AnimeDetailsPage from '../AnimeDetailsPage/AnimeDetailsPage';
 import Header from '../Header/Header';
 
-interface Anime {
+interface AnimeList {
   mal_id: number;
   title: string;
   images: {
@@ -31,14 +33,13 @@ const AnimeList: React.FC = () => {
   const { filteredAnimeList, fetchAnime } = useAnimeStore();
   const { currentPage, itemsPerPage } = usePaginationStore();
   const { sortCriteria } = useSortStore();
-  const [selectedAnimeId, setSelectedAnimeId] = useState<number | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isModalOpen, selectedAnimeId, openModal, closeModal } = useModalStore(); 
 
   useEffect(() => {
     fetchAnime();
   }, [fetchAnime]);
 
-  const sortAnime = (a: Anime, b: Anime): number => {
+  const sortAnime = (a: AnimeList, b: AnimeList): number => {
     const dateAStart = a.aired?.from && !isNaN(Date.parse(a.aired.from)) 
       ? new Date(a.aired.from).getTime() 
       : -Infinity;  
@@ -77,23 +78,14 @@ const AnimeList: React.FC = () => {
   const sortedAnimeList = [...filteredAnimeList].sort(sortAnime);
   const paginatedList = sortedAnimeList.slice(startIndex, startIndex + itemsPerPage);
 
-  const handleAnimeClick = (animeId: number) => {
-    setSelectedAnimeId(animeId);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
   return (
     <div className={styles.anime__list}>
       <Header />
       <div className={styles.container}>
         <h1 className={styles.anime__list__title}>Список аниме</h1>
         <div className={styles.anime__list__content}>
-          {paginatedList.map((anime: Anime) => (
-            <div className={styles.anime__list__items} key={anime.mal_id} onClick={() => handleAnimeClick(anime.mal_id)}>
+          {paginatedList.map((anime: AnimeList) => (
+            <div className={styles.anime__list__items} key={anime.mal_id} onClick={() => openModal(anime.mal_id)}>
               <AnimeCard
                 anime={{
                   mal_id: anime.mal_id,
@@ -110,8 +102,7 @@ const AnimeList: React.FC = () => {
           ))}      
         </div>
         <Pagination totalItems={filteredAnimeList.length} />
-        {/* Модальное окно для деталей аниме */}
-        <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
           {selectedAnimeId && <AnimeDetailsPage animeId={selectedAnimeId} />}
         </Modal>
         </div>
